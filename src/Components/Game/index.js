@@ -4,8 +4,6 @@ import './index.css'
 import {RiCloseLine} from 'react-icons/ri'
 import 'reactjs-popup/dist/index.css'
 
-let s = 0
-
 class Game extends Component {
   state = {
     clickedBtn: false,
@@ -15,26 +13,32 @@ class Game extends Component {
   }
 
   onClickRock = event => {
+    const {choicesList} = this.props
+    console.log(event.target.id)
     this.setState({
       clickedImage: event.target.src,
       clickedBtn: true,
-      imageId: event.target.alt,
+      imageId: choicesList[0].id,
     })
   }
 
   onClickScissor = event => {
+    const {choicesList} = this.props
+    console.log(event.target.id)
     this.setState({
       clickedImage: event.target.src,
       clickedBtn: true,
-      imageId: event.target.alt,
+      imageId: choicesList[1].id,
     })
   }
 
   onClickPaper = event => {
+    const {choicesList} = this.props
+    console.log(event.target.id)
     this.setState({
       clickedImage: event.target.src,
       clickedBtn: true,
-      imageId: event.target.alt,
+      imageId: choicesList[2].id,
     })
   }
 
@@ -99,50 +103,47 @@ class Game extends Component {
 
     if (imageId === choicesList[randomGeneratedImage].id) {
       result = 'IT IS DRAW'
-      s += 0
+      this.setState(prevState => ({score: prevState.score + 0}))
     } else if (
       imageId === 'PAPER' &&
       choicesList[randomGeneratedImage].id === 'ROCK'
     ) {
       result = 'YOU WON'
-      s += 1
+      this.setState(prevState => ({score: prevState.score + 1}))
     } else if (
       imageId === 'SCISSORS' &&
       choicesList[randomGeneratedImage].id === 'ROCK'
     ) {
       result = 'YOU LOSE'
 
-      s -= 1
+      this.setState(prevState => ({score: prevState.score - 1}))
     } else if (
       imageId === 'ROCK' &&
       choicesList[randomGeneratedImage].id === 'PAPER'
     ) {
       result = 'YOU LOSE'
-      s += 1
+      this.setState(prevState => ({score: prevState.score - 1}))
     } else if (
       imageId === 'SCISSORS' &&
       choicesList[randomGeneratedImage].id === 'PAPER'
     ) {
       result = 'YOU WON'
 
-      s += 1
+      this.setState(prevState => ({score: prevState.score + 1}))
     } else if (
       imageId === 'ROCK' &&
       choicesList[randomGeneratedImage].id === 'SCISSORS'
     ) {
       result = 'YOU WON'
 
-      s += 1
+      this.setState(prevState => ({score: prevState.score + 1}))
     } else if (
       imageId === 'PAPER' &&
       choicesList[randomGeneratedImage].id === 'SCISSORS'
     ) {
       result = 'YOU LOSE'
-
-      s -= 1
+      this.setState(prevState => ({score: prevState.score - 1}))
     }
-
-    console.log(s)
 
     return (
       <div>
@@ -175,19 +176,20 @@ class Game extends Component {
   }
 
   render() {
-    const {clickedBtn} = this.state
+    const {clickedBtn, score} = this.state
 
     return (
       <div className="app-bg">
         <div className="header">
           <div className="names-container">
-            <h1 className="name">ROCK</h1>
-            <h1 className="name">PAPER</h1>
-            <h1 className="name">SCISSORS</h1>
+            <h1 className="name">
+              ROCK <br /> PAPER <br />
+              SCISSORS
+            </h1>
           </div>
           <div className="result-container">
             <p className="score">Score</p>
-            <p className="score1">{s}</p>
+            <p className="score1">{score}</p>
           </div>
         </div>
         {clickedBtn ? this.renderResultView() : this.renderPlayingView()}
