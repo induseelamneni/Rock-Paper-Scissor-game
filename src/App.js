@@ -1,6 +1,13 @@
 import './App.css'
 
+import {useState} from 'react'
+import {Route, Switch} from 'react-router-dom'
+import {AppBg} from './styledComponent'
+
 import Game from './Components/Game'
+import Play from './Components/Play'
+import Header from './Components/Header'
+import Footer from './Components/Footer'
 
 const choicesList = [
   {
@@ -20,6 +27,38 @@ const choicesList = [
   },
 ]
 
-const App = () => <Game choicesList={choicesList} />
+const App = () => {
+  const [myChoice, setMyChoice] = useState('')
+  const [myChoiceId, setMyChoiceId] = useState('')
+  const [score, setScore] = useState(0)
+
+  return (
+    <AppBg>
+      <Header score={score} />
+
+      <Switch>
+        <Route exact path="/">
+          <Play
+            setMyChoice={setMyChoice}
+            setMyChoiceId={setMyChoiceId}
+            choicesList={choicesList}
+          />
+        </Route>
+
+        <Route exact path="/game">
+          <Game
+            myChoice={myChoice}
+            score={score}
+            setScore={setScore}
+            myChoiceId={myChoiceId}
+            choicesList={choicesList}
+          />
+        </Route>
+      </Switch>
+
+      <Footer />
+    </AppBg>
+  )
+}
 
 export default App

@@ -10,3 +10,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.app-bg {
+  background-color: #223a5f;
+  height: 100vh;
+  padding-left: 34px;
+  padding-right: 34px;
+  padding-top: 34px;
+}

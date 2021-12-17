@@ -1,232 +1,84 @@
-import Popup from 'reactjs-popup'
-import {Component} from 'react'
-import './index.css'
-import {RiCloseLine} from 'react-icons/ri'
-import 'reactjs-popup/dist/index.css'
+// import {useState} from 'react'
 
-class Game extends Component {
-  state = {
-    clickedBtn: false,
-    clickedImage: '',
-    score: 0,
-    imageId: '',
-  }
+import {Link} from 'react-router-dom'
+import {useEffect, useState} from 'react'
 
-  onClickRock = event => {
-    const {choicesList} = this.props
-    console.log(event.target.id)
-    this.setState({
-      clickedImage: event.target.src,
-      clickedBtn: true,
-      imageId: choicesList[0].id,
-    })
-  }
+import {
+  Body1,
+  ResultMagDisplayContainer,
+  PlayAgainBtn,
+  YouContainer,
+  Image,
+  ResultMsg,
+} from './styledComponents'
 
-  onClickScissor = event => {
-    const {choicesList} = this.props
-    console.log(event.target.id)
-    this.setState({
-      clickedImage: event.target.src,
-      clickedBtn: true,
-      imageId: choicesList[1].id,
-    })
-  }
+const Game = ({myChoice, choicesList, myChoiceId, setScore, score}) => {
+  const [playerWinOrLoss, playerWinOrLossMsg] = useState('')
+  const [oponentChoice, setOponentChoice] = useState('')
+  const [oponentChoiceImg, setOponentChoiceImg] = useState('')
 
-  onClickPaper = event => {
-    const {choicesList} = this.props
-    console.log(event.target.id)
-    this.setState({
-      clickedImage: event.target.src,
-      clickedBtn: true,
-      imageId: choicesList[2].id,
-    })
-  }
-
-  renderPlayingView = () => {
-    const {choicesList} = this.props
-    return (
-      <div className="body">
-        <div className="rock-scissor">
-          <button
-            type="button"
-            className="game-play-btn"
-            onClick={this.onClickRock}
-            data-testid="rockButton"
-          >
-            <img
-              src={choicesList[0].imageUrl}
-              alt={choicesList[0].id}
-              className="image"
-            />
-          </button>
-          <button
-            type="button"
-            className="game-play-btn"
-            onClick={this.onClickScissor}
-            data-testid="scissorsButton"
-          >
-            <img
-              src={choicesList[1].imageUrl}
-              alt={choicesList[1].id}
-              className="image"
-            />
-          </button>
-        </div>
-        <div>
-          <button
-            type="button"
-            className="game-play-btn"
-            onClick={this.onClickPaper}
-            data-testid="paperButton"
-          >
-            <img
-              src={choicesList[2].imageUrl}
-              alt={choicesList[2].id}
-              className="image"
-            />
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  playAgain = () => {
-    this.setState({clickedBtn: false})
-  }
-
-  renderResultView = () => {
-    const {clickedImage, imageId} = this.state
-    const {choicesList} = this.props
+  const randomGenerated = () => {
     const randomGeneratedImage = Math.floor(Math.random() * 3)
+    setOponentChoice(choicesList[randomGeneratedImage].id)
+    setOponentChoiceImg(choicesList[randomGeneratedImage].imageUrl)
+  }
 
-    let result = ''
+  useEffect(() => {
+    randomGenerated()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    if (imageId === choicesList[randomGeneratedImage].id) {
-      result = 'IT IS DRAW'
-      this.setState(prevState => ({score: prevState.score + 0}))
-    } else if (
-      imageId === 'PAPER' &&
-      choicesList[randomGeneratedImage].id === 'ROCK'
-    ) {
-      result = 'YOU WON'
-      this.setState(prevState => ({score: prevState.score + 1}))
-    } else if (
-      imageId === 'SCISSORS' &&
-      choicesList[randomGeneratedImage].id === 'ROCK'
-    ) {
-      result = 'YOU LOSE'
-
-      this.setState(prevState => ({score: prevState.score - 1}))
-    } else if (
-      imageId === 'ROCK' &&
-      choicesList[randomGeneratedImage].id === 'PAPER'
-    ) {
-      result = 'YOU LOSE'
-      this.setState(prevState => ({score: prevState.score - 1}))
-    } else if (
-      imageId === 'SCISSORS' &&
-      choicesList[randomGeneratedImage].id === 'PAPER'
-    ) {
-      result = 'YOU WON'
-
-      this.setState(prevState => ({score: prevState.score + 1}))
-    } else if (
-      imageId === 'ROCK' &&
-      choicesList[randomGeneratedImage].id === 'SCISSORS'
-    ) {
-      result = 'YOU WON'
-
-      this.setState(prevState => ({score: prevState.score + 1}))
-    } else if (
-      imageId === 'PAPER' &&
-      choicesList[randomGeneratedImage].id === 'SCISSORS'
-    ) {
-      result = 'YOU LOSE'
-      this.setState(prevState => ({score: prevState.score - 1}))
+  const resultCalculation = () => {
+    console.log(myChoiceId)
+    console.log(oponentChoice)
+    if (myChoiceId === 'PAPER' && oponentChoice === 'ROCK') {
+      playerWinOrLossMsg('YOU WON')
+      setScore(score + 1)
+    } else if (myChoiceId === 'SCISSORS' && oponentChoice === 'ROCK') {
+      playerWinOrLossMsg('YOU LOSE')
+      setScore(score - 1)
+    } else if (myChoiceId === 'ROCK' && oponentChoice === 'PAPER') {
+      playerWinOrLossMsg('YOU LOSE')
+      setScore(score - 1)
+    } else if (myChoiceId === 'SCISSORS' && oponentChoice === 'PAPER') {
+      playerWinOrLossMsg('YOU WON')
+      setScore(score + 1)
+    } else if (myChoiceId === 'ROCK' && oponentChoice === 'SCISSORS') {
+      playerWinOrLossMsg('YOU WON')
+      setScore(score + 1)
+    } else if (myChoiceId === 'PAPER' && oponentChoice === 'SCISSORS') {
+      playerWinOrLossMsg('YOU LOSE')
+      setScore(score - 1)
+    } else {
+      playerWinOrLossMsg('IT IS DRAW')
+      setScore(score + 0)
     }
-
-    return (
-      <div>
-        <div className="body1">
-          <div className="you-container">
-            <p className="result-msg">YOU</p>
-            <img src={clickedImage} alt="your choice" className="image" />
-          </div>
-          <div className="you-container">
-            <p className="result-msg">OPPONENT</p>
-            <img
-              src={choicesList[randomGeneratedImage].imageUrl}
-              alt="opponent choice"
-              className="image"
-            />
-          </div>
-        </div>
-        <div className="result-mag-display-container">
-          <p className="result-msg">{result}</p>
-          <button
-            type="button"
-            className="play-again-btn"
-            onClick={this.playAgain}
-          >
-            PLAY AGAIN
-          </button>
-        </div>
-      </div>
-    )
+    console.log(score)
   }
 
-  render() {
-    const {clickedBtn, score} = this.state
+  useEffect(() => {
+    resultCalculation()
+  }, [oponentChoice]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    return (
-      <div className="app-bg">
-        <div className="header">
-          <div className="names-container">
-            <h1 className="name">
-              ROCK <br /> PAPER <br />
-              SCISSORS
-            </h1>
-          </div>
-          <div className="result-container">
-            <p className="score">Score</p>
-            <p className="score1">{score}</p>
-          </div>
-        </div>
-        {clickedBtn ? this.renderResultView() : this.renderPlayingView()}
-        <div className="bottom-container">
-          <Popup
-            modal
-            trigger={
-              <button type="button" className="rules-btn">
-                Rules
-              </button>
-            }
-            className="popup-content"
-          >
-            {close => (
-              <div className="modal-container">
-                <button
-                  type="button"
-                  data-testid="closeButton"
-                  className="close-button"
-                  onClick={() => close()}
-                >
-                  <RiCloseLine size={20} color="#231f20" margin-top={10} />
-                </button>
-                <div className="movie-player-container">
-                  <img
-                    src="https://assets.ccbp.in/frontend/react-js/rock-paper-scissor/rules-image.png"
-                    alt="rules"
-                    className="rules-img"
-                  />
-                </div>
-              </div>
-            )}
-          </Popup>
-        </div>
-      </div>
-    )
-  }
+  return (
+    <>
+      <Body1>
+        <YouContainer>
+          <ResultMsg>YOU</ResultMsg>
+          <Image src={myChoice} alt="your choice" />
+        </YouContainer>
+        <YouContainer id={oponentChoice}>
+          <ResultMsg>OPPONENT</ResultMsg>
+          <Image src={oponentChoiceImg} alt="opponent choice" />
+        </YouContainer>
+      </Body1>
+      <ResultMagDisplayContainer>
+        <ResultMsg>{playerWinOrLoss}</ResultMsg>
+        <Link to="/">
+          <PlayAgainBtn type="button">PLAY AGAIN</PlayAgainBtn>
+        </Link>
+      </ResultMagDisplayContainer>
+    </>
+  )
 }
 
 export default Game
